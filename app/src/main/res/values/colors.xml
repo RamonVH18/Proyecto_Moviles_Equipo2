@@ -9,4 +9,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#FFE0E0E0</color>
     <color name="black_gray">#FF616161</color>
+    <color name="lavanda_brillante">#B57EDC</color>
+    <color name="lavanda_nieve">#F3E5F5</color>
+    <color name="lavanda_humo">#E6E6FA</color>
+    <color name="lavanda_profundo">#5E35B1</color>
+    <color name="berenjena_suave">#4A148C</color>
+    <color name="amatista_suave">#9575CD</color>
 </resources>

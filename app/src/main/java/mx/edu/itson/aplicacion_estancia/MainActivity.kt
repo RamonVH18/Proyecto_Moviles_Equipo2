@@ -30,6 +30,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import mx.edu.itson.aplicacion_estancia.ui.theme.Aplicacion_EstanciaTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,8 +41,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             Aplicacion_EstanciaTheme {
-                InicioSesionScreen()
+                AppNavigation()
             }
         }
     }
@@ -62,7 +67,7 @@ fun GreetingPreview() {
 
 @SuppressLint("ResourceAsColor")
 @Composable
-fun InicioSesionScreen() {
+fun InicioSesionScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -115,7 +120,9 @@ fun InicioSesionScreen() {
 
 
         Button(
-            onClick = { /* Acción para Registrar */ },
+            onClick = {
+                navController.navigate("formulario")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
@@ -135,5 +142,6 @@ fun InicioSesionScreen() {
         Spacer(modifier = Modifier.weight(1.5f))
     }
 }
+
 
 

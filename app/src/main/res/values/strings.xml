@@ -3,4 +3,17 @@
     <string name="btnRegistrar">Registrar</string>
     <string name="eslogan">Cuidamos lo que más amas.</string>
     <string name="btnIniciar">Iniciar Sesión</string>
+    <!-- Aqui comienzan los string del formulario Registro. -->
+    <string name="form_label_nombre">Nombre</string>
+    <string name="form_placeholder_nombre">Escribe tu nombre completo</string>
+    <string name="form_label_fecha_nacimiento">Fecha de Nacimiento</string>
+    <string name="form_placeholder_fecha_nacimiento">DD/MM/AAAA</string>
+    <string name="form_label_correo">Correo Electrónico</string>
+    <string name="form_placeholder_correo">ejemplo@correo.com</string>
+    <string name="form_label_telefono">Teléfono</string>
+    <string name="form_placeholder_telefono">(000) 000-0000</string>
+    <string name="form_label_mensaje">Escribe aquí tu mensaje</string>
+    <string name="form_placeholder_mensaje">Escribe aquí tu mensaje...</string>
+    <string name="form_boton_enviar">Enviar</string>
+    <string name="guardado">Usuario Guardado</string>
 </resources>
