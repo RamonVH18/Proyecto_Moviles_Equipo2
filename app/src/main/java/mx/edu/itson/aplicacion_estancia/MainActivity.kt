@@ -99,7 +99,9 @@ fun InicioSesionScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(48.dp))
 
         Button(
-            onClick = { /* Acción para Iniciar Sesión */ },
+            onClick = {
+                navController.navigate("menuPrincipal")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),

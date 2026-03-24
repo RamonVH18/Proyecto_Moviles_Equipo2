@@ -16,4 +16,11 @@
     <string name="form_placeholder_mensaje">Escribe aquí tu mensaje...</string>
     <string name="form_boton_enviar">Enviar</string>
     <string name="guardado">Usuario Guardado</string>
+    <!-- Aqui comienzan los string de la pantalla principal -->
+    <string name="btnPacientes">Ver paciente</string>
+    <string name="btnEvaluaciones">Evaluaciones</string>
+    <string name="btnHistorial">Historial</string>
+    <string name="btnPendientes">Pendientes</string>
+    <string name="tituloMenu">Bienvenido,</string>
+    <string name="nombreEstancia">Estancia Alzheimer</string>
 </resources>

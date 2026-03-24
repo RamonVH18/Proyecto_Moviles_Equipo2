@@ -21,5 +21,9 @@ fun AppNavigation() {
         composable("formulario") {
             FormularioDeContacto(navController = navController)
         }
+
+        composable("menuPrincipal") {
+            PantallaMenuPrincipal()
+        }
     }
 }
