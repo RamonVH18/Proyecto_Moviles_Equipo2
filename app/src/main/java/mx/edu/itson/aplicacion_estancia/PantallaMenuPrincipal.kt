@@ -35,11 +35,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 data class OpcionMenu(val titulo: String, val icono: ImageVector, val color: Color)
 
 @Composable
-fun PantallaMenuPrincipal() {
+fun PantallaMenuPrincipal(navController: NavHostController) {
     val context = LocalContext.current
 
     // Definimos las opciones (Aquí puedes usar tus colores de res/colors.xml)
@@ -83,7 +85,7 @@ fun PantallaMenuPrincipal() {
             modifier = Modifier.fillMaxWidth()
         ) {
             items(opciones) { opcion ->
-                TarjetaMenu(opcion) {
+                TarjetaMenu(navController, opcion) {
 
                 }
             }
@@ -92,15 +94,22 @@ fun PantallaMenuPrincipal() {
 }
 
 @Composable
-fun TarjetaMenu(opcion: OpcionMenu, onClick: () -> Unit) {
+fun TarjetaMenu(navController:NavHostController, opcion: OpcionMenu, onClick: () -> Unit) {
+    val textoPacientes = stringResource(R.string.btnPacientes)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
-            .clickable { onClick() },
+            .height(150.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick  = {
+            when (opcion.titulo) {
+                textoPacientes -> navController.navigate("listaPacientes")
+                else -> println("Easter Lerma") // El 'else' es el 'default'
+            }
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -120,6 +129,7 @@ fun TarjetaMenu(opcion: OpcionMenu, onClick: () -> Unit) {
                 color = colorResource(R.color.black_gray),
                 fontSize = 16.sp
             )
+
         }
     }
 }

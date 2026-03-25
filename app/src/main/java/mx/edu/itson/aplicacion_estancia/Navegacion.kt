@@ -23,7 +23,11 @@ fun AppNavigation() {
         }
 
         composable("menuPrincipal") {
-            PantallaMenuPrincipal()
+            PantallaMenuPrincipal(navController = navController)
+        }
+
+        composable ("listaPacientes") {
+            PantallaListaPacientes()
         }
     }
 }

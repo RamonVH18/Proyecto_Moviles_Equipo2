@@ -4,11 +4,11 @@ package mx.edu.itson.aplicacion_estancia.entidades
 //import androidx.room.PrimaryKey
 //
 //@Entity(tableName = "pacientes")
-//data class Paciente(
+data class Paciente(
 //    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-//    val nombre: String,
-//    val apellidoPaterno: String,
-//    val apellidoMaterno: String,
-//    val fechaNacimiento: String,
-//    val contacto: String
-//)
+    val nombre: String,
+    val apellidoPaterno: String,
+    val apellidoMaterno: String,
+    val fechaNacimiento: String,
+    val contacto: String
+)
