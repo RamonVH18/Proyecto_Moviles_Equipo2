@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Aplicacion_Estancia</string>
     <string name="btnRegistrar">Registrar</string>
-    <string name="eslogan">Cuidamos lo que más amas.</string>
+    <string name="eslogan">Para NO olvidar a los que\nNO pueden recordar.</string>
     <string name="btnIniciar">Iniciar Sesión</string>
     <!-- Aqui comienzan los string del formulario Registro. -->
     <string name="form_label_nombre">Nombre</string>

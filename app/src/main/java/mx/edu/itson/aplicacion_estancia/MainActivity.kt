@@ -23,11 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
@@ -71,19 +74,20 @@ fun InicioSesionScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(colorResource(R.color.lavanda_nieve))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.weight(1f))
 
         Image(
-            painter = painterResource(id = R.drawable.logo),
+            painter = painterResource(id = R.drawable.logoalz),
             contentDescription = "Logo de la aplicación",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(width = 240.dp, height = 180.dp)
-                .background(colorResource(R.color.gray), shape = RoundedCornerShape(8.dp))/* 0xFFF5F5F5*/
-                .padding(24.dp)
+                .size(width = 440.dp, height = 380.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(colorResource(R.color.lavanda_brillante))
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -91,9 +95,10 @@ fun InicioSesionScreen(navController: NavHostController) {
         Text(
             text = stringResource(R.string.eslogan),
             fontSize = 18.sp,
-            fontWeight = FontWeight.Light,
-            color = colorResource(R.color.black_gray),
-            modifier = Modifier.padding(horizontal = 32.dp)
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(R.color.berenjena_suave),
+            modifier = Modifier.padding(horizontal = 42.dp)
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -106,7 +111,7 @@ fun InicioSesionScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.black_gray)
+                containerColor = colorResource(R.color.berenjena_suave)
             ),
             shape = RoundedCornerShape(4.dp)
         ) {
@@ -129,7 +134,7 @@ fun InicioSesionScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.gray)
+                containerColor = colorResource(R.color.lavanda_brillante)
             ),
             shape = RoundedCornerShape(4.dp)
         ) {
