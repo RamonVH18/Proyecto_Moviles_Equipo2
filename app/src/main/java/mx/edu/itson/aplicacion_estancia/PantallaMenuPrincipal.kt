@@ -96,6 +96,7 @@ fun PantallaMenuPrincipal(navController: NavHostController) {
 @Composable
 fun TarjetaMenu(navController:NavHostController, opcion: OpcionMenu, onClick: () -> Unit) {
     val textoPacientes = stringResource(R.string.btnPacientes)
+    val textoEvaluaciones = stringResource(R.string.btnEvaluaciones)
 
     Card(
         modifier = Modifier
@@ -107,6 +108,7 @@ fun TarjetaMenu(navController:NavHostController, opcion: OpcionMenu, onClick: ()
         onClick  = {
             when (opcion.titulo) {
                 textoPacientes -> navController.navigate("listaPacientes")
+                textoEvaluaciones -> navController.navigate("selectorEvaluacion")
                 else -> println("Easter Lerma") // El 'else' es el 'default'
             }
         }

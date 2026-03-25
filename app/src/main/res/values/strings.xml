@@ -28,4 +28,10 @@
     <string name="navRegistro">Registro</string>
     <string name="navMenuPrincipal">MenuPrincipal</string>
     <string name="navListaPacientes">ListaPacientes</string>
+    <!--Formulario MMSE -->
+    <string name="preguntaMMSE1">¿En qué año estamos?</string>
+    <string name="preguntaMMSE2">¿En qué estación del año?</string>
+    <string name="preguntaMMSE3">¿Qué día del mes es hoy?</string>
+    <string name="preguntaMMSE4">¿En qué mes estamos?</string>
+    <string name="preguntaMMSE5">¿Qué día de la semana es hoy?</string>
 </resources>

@@ -1,6 +1,7 @@
 package mx.edu.itson.aplicacion_estancia
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,10 +16,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import mx.edu.itson.aplicacion_estancia.entidades.Paciente
 
 @Composable
-fun PantallaListaPacientes() {
+fun PantallaListaPacientes(navController: NavHostController) {
     // 2. Lista de personajes solicitados (Mockeados)
     val pacientes = listOf(
         Paciente("Ramon", "Flores", "Vasquez", "15/05/1945", "6441234567"),
@@ -46,16 +48,21 @@ fun PantallaListaPacientes() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(pacientes) { paciente ->
-                CardPaciente(paciente)
+                CardPaciente(paciente, navController)
             }
         }
     }
 }
 
 @Composable
-fun CardPaciente(paciente: Paciente) {
+fun CardPaciente(paciente: Paciente, navController: NavHostController) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                val nombreCompleto = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}"
+                navController.navigate("seguimiento/$nombreCompleto")
+            },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
