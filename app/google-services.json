@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "407431826148",
+    "project_id": "estancia-alzheimer",
+    "storage_bucket": "estancia-alzheimer.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407431826148:android:e14aadedc9f3f4f251faf1",
+        "android_client_info": {
+          "package_name": "mx.edu.itson.aplicacion_estancia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClxmpR_ExThzS4qjfBhoBK5-Q6EAMOKuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
