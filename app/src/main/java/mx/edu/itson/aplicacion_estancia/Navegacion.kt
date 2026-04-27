@@ -32,6 +32,10 @@ fun AppNavigation() {
             PantallaListaPacientes(navController = navController)
         }
 
+        composable("registroPaciente") {
+            PantallaFormularioPaciente(navController = navController)
+        }
+
         composable("seguimiento/{nombre}") { backStackEntry ->
             val nombreSeleccionado = backStackEntry.arguments?.getString("nombre") ?: "Paciente"
             PantallaSeguimientoResultados(nombreSeleccionado)

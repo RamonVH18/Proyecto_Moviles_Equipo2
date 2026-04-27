@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +23,6 @@ import mx.edu.itson.aplicacion_estancia.entidades.Paciente
 
 @Composable
 fun PantallaListaPacientes(navController: NavHostController) {
-    // 2. Lista de personajes solicitados (Mockeados)
     val pacientes = listOf(
         Paciente("Ramon", "Flores", "Vasquez", "15/05/1945", "6441234567"),
         Paciente("Abraham", "Tovar", "Guerrero", "22/10/1950", "6449876543"),
@@ -30,25 +31,40 @@ fun PantallaListaPacientes(navController: NavHostController) {
         Paciente("Jaime Eduardo", "Lerma", "Cuevas", "30/07/1947", "6444449988")
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.lavanda_nieve)) // Fondo suave
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Directorio de Pacientes",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.berenjena_suave),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { navController.navigate("registroPaciente") },
+                containerColor = colorResource(id = R.color.berenjena_suave),
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp),
+                icon = { Icon(Icons.Default.Add, contentDescription = "Agregar") },
+                text = { Text("Nuevo Paciente") }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(colorResource(id = R.color.lavanda_nieve))
+                .padding(16.dp)
         ) {
-            items(pacientes) { paciente ->
-                CardPaciente(paciente, navController)
+            Text(
+                text = "Directorio de Pacientes",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.berenjena_suave),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(pacientes) { paciente ->
+                    CardPaciente(paciente, navController)
+                }
             }
         }
     }
@@ -73,7 +89,6 @@ fun CardPaciente(paciente: Paciente, navController: NavHostController) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Inicial estilizada con Amatista
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -91,7 +106,6 @@ fun CardPaciente(paciente: Paciente, navController: NavHostController) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                // Nombre Completo
                 Text(
                     text = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}",
                     fontSize = 18.sp,
@@ -99,14 +113,12 @@ fun CardPaciente(paciente: Paciente, navController: NavHostController) {
                     color = colorResource(id = R.color.berenjena_suave)
                 )
 
-                // Fecha de Nacimiento
                 Text(
                     text = "Nació: ${paciente.fechaNacimiento}",
                     fontSize = 14.sp,
-                    color = colorResource(id = R.color.black_gray)
+                    color = Color.Gray
                 )
 
-                // Contacto (Resaltado con Lavanda Profundo)
                 Text(
                     text = "Tel: ${paciente.contacto}",
                     fontSize = 14.sp,

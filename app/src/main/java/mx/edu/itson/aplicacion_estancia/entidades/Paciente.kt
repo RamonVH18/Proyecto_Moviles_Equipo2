@@ -6,9 +6,9 @@ package mx.edu.itson.aplicacion_estancia.entidades
 //@Entity(tableName = "pacientes")
 data class Paciente(
 //    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val nombre: String,
-    val apellidoPaterno: String,
-    val apellidoMaterno: String,
-    val fechaNacimiento: String,
-    val contacto: String
+    val nombre: String = "",
+    val apellidoPaterno: String = "",
+    val apellidoMaterno: String = "",
+    val fechaNacimiento: String = "",
+    val contacto: String = ""
 )
