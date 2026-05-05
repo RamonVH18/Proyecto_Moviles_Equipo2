@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,17 +19,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import mx.edu.itson.aplicacion_estancia.entidades.Paciente
 
 @Composable
 fun PantallaListaPacientes(navController: NavHostController) {
-    val pacientes = listOf(
-        Paciente("Ramon", "Flores", "Vasquez", "15/05/1945", "6441234567"),
-        Paciente("Abraham", "Tovar", "Guerrero", "22/10/1950", "6449876543"),
-        Paciente("Daniel", "Coronel", "Miramontes", "03/01/1948", "6445551234"),
-        Paciente("Sebas", "Tortellini", "Borquez", "12/12/1952", "6441112233"),
-        Paciente("Jaime Eduardo", "Lerma", "Cuevas", "30/07/1947", "6444449988")
-    )
+    val database = FirebaseDatabase.getInstance().getReference("Pacientes")
+    var pacientes by remember { mutableStateOf<List<Paciente>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    // Escuchar cambios en tiempo real desde Firebase
+    LaunchedEffect(Unit) {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val listaTemporal = mutableListOf<Paciente>()
+                for (pacienteSnapshot in snapshot.children) {
+                    val paciente = pacienteSnapshot.getValue(Paciente::class.java)
+                    if (paciente != null) {
+                        listaTemporal.add(paciente)
+                    }
+                }
+                pacientes = listaTemporal
+                isLoading = false
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                isLoading = false
+            }
+        }
+        database.addValueEventListener(listener)
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -58,12 +80,22 @@ fun PantallaListaPacientes(navController: NavHostController) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(pacientes) { paciente ->
-                    CardPaciente(paciente, navController)
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = colorResource(id = R.color.berenjena_suave))
+                }
+            } else if (pacientes.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "No hay pacientes registrados", color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(pacientes) { paciente ->
+                        CardPaciente(paciente, navController)
+                    }
                 }
             }
         }
@@ -96,7 +128,7 @@ fun CardPaciente(paciente: Paciente, navController: NavHostController) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = paciente.nombre.take(1),
+                    text = if (paciente.nombre.isNotEmpty()) paciente.nombre.take(1) else "?",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp

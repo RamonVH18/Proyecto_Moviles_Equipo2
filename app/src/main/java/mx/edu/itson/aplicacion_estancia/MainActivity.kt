@@ -105,7 +105,7 @@ fun InicioSesionScreen(navController: NavHostController) {
 
         Button(
             onClick = {
-                navController.navigate("menuPrincipal")
+                navController.navigate("login")
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,6 +149,3 @@ fun InicioSesionScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.weight(1.5f))
     }
 }
-
-
-

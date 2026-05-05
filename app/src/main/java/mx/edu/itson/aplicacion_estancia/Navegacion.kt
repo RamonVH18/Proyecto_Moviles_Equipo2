@@ -20,6 +20,10 @@ fun AppNavigation() {
             InicioSesionScreen(navController = navController)
         }
 
+        composable("login") {
+            PantallaLogin(navController = navController)
+        }
+
         composable("formulario") {
             FormularioDeContacto(navController = navController)
         }
