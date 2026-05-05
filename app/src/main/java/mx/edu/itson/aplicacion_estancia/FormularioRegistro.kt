@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -26,21 +27,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun FormularioDeContacto(navController: NavHostController) {
 
     var nombre by remember { mutableStateOf("") }
-    var fechaNacimiento by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var mensaje by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    
+    val auth = FirebaseAuth.getInstance()
+    val database = FirebaseDatabase.getInstance().getReference("Usuarios")
     val context = LocalContext.current
-
-
 
     Column (
         modifier = Modifier
@@ -51,54 +55,43 @@ fun FormularioDeContacto(navController: NavHostController) {
     ) {
         Spacer(modifier = Modifier.height(64.dp))
 
+        Text(
+            text = "Crear Cuenta",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
 
         CampoDeEntrada(
             value = nombre,
             onValueChange = { nombre = it },
-            label = stringResource(id = R.string.form_label_nombre),
-            placeholder = stringResource(id = R.string.form_placeholder_nombre)
+            label = "Nombre Completo",
+            placeholder = "Escribe tu nombre"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
-
-        CampoDeEntrada(
-            value = fechaNacimiento,
-            onValueChange = { fechaNacimiento = it },
-            label = stringResource(id = R.string.form_label_fecha_nacimiento),
-            placeholder = stringResource(id = R.string.form_placeholder_fecha_nacimiento)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
 
         CampoDeEntrada(
             value = correo,
             onValueChange = { correo = it },
-            label = stringResource(id = R.string.form_label_correo),
-            placeholder = stringResource(id = R.string.form_placeholder_correo)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CampoDeEntrada(
-            value = telefono,
-            onValueChange = { telefono = it },
-            label = stringResource(id = R.string.form_label_telefono),
-            placeholder = stringResource(id = R.string.form_placeholder_telefono)
+            label = "Correo Electrónico",
+            placeholder = "ejemplo@correo.com",
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = mensaje,
-            onValueChange = { mensaje = it },
-            label = { Text(stringResource(id = R.string.form_label_mensaje)) },
-            placeholder = { Text(stringResource(id = R.string.form_placeholder_mensaje)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp),
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Contraseña") },
+            placeholder = { Text("Mínimo 6 caracteres") },
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
@@ -111,17 +104,46 @@ fun FormularioDeContacto(navController: NavHostController) {
 
         Button (
             onClick = {
-                Toast.makeText(context, R.string.guardado, Toast.LENGTH_SHORT).show()
-                      },
+                if (nombre.isNotEmpty() && correo.isNotEmpty() && password.isNotEmpty()) {
+                    auth.createUserWithEmailAndPassword(correo, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val userId = auth.currentUser?.uid
+                                val userMap = mapOf(
+                                    "nombre" to nombre,
+                                    "correo" to correo
+                                )
+                                
+                                if (userId != null) {
+                                    database.child(userId).setValue(userMap)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                                            navController.navigate("menuPrincipal") {
+                                                popUpTo("inicio") { inclusive = true }
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(context, "Error al guardar perfil: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            } else {
+                                Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                } else {
+                    Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
+                }
+            },
             modifier = Modifier
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 32.dp)
+                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.berenjena_suave)
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.form_boton_enviar),
+                text = "Registrarse",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
@@ -139,7 +161,8 @@ fun CampoDeEntrada(
     onValueChange: (String) -> Unit,
     label: String,
     placeholder: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     OutlinedTextField(
         value = value,
@@ -149,6 +172,7 @@ fun CampoDeEntrada(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
+        keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,

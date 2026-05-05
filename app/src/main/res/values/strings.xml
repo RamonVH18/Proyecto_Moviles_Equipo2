@@ -10,11 +10,14 @@
     <string name="form_placeholder_fecha_nacimiento">DD/MM/AAAA</string>
     <string name="form_label_correo">Correo Electrónico</string>
     <string name="form_placeholder_correo">ejemplo@correo.com</string>
+    <string name="form_label_password">Contraseña</string>
+    <string name="form_placeholder_password">Escribe tu contraseña</string>
     <string name="form_label_telefono">Teléfono</string>
     <string name="form_placeholder_telefono">(000) 000-0000</string>
     <string name="form_label_mensaje">Escribe aquí tu mensaje</string>
     <string name="form_placeholder_mensaje">Escribe aquí tu mensaje...</string>
     <string name="form_boton_enviar">Enviar</string>
+    <string name="form_boton_registrar">Registrarse</string>
     <string name="guardado">Usuario Guardado</string>
     <!-- Aqui comienzan los string de la pantalla principal -->
     <string name="btnPacientes">Pacientes</string>
