@@ -16,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
 @Composable
 fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navController: NavHostController) {
@@ -89,7 +91,7 @@ fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navCon
 
         Button(
             onClick = {
-                navController.navigate("pantallaResumen/$nombrePaciente/Tinetti/$puntajeTotal")
+                finalizarTinetti(idPaciente, "Tinetti", puntajeTotal, navController, nombrePaciente)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.berenjena_suave)),
@@ -133,4 +135,19 @@ fun SeccionTinetti(titulo: String, opciones: List<String>, seleccionado: Int, on
             }
         }
     }
+}
+
+fun finalizarTinetti(idPaciente: String, tipoExamen: String, puntajeFinal: Int, navController: NavHostController, nombrePaciente: String) {
+    val dbRef = Firebase.database.getReference("Pacientes/$idPaciente/resultados")
+
+    val datosExamen = mapOf(
+        "tipo" to tipoExamen,
+        "puntaje" to puntajeFinal,
+        "fecha" to System.currentTimeMillis()
+    )
+
+    dbRef.push().setValue(datosExamen)
+        .addOnSuccessListener {
+            navController.navigate("pantallaResumen/$nombrePaciente/Tinetti/$puntajeFinal")
+        }
 }

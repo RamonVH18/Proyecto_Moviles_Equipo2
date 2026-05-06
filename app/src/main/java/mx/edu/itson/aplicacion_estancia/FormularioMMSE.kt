@@ -87,7 +87,7 @@ fun PantallaFormularioMMSE(idPaciente: String, nombrePaciente: String, navContro
 
         Button(
             onClick = {
-                finalizarExamen(idPaciente, "MMSE", puntajeTotal, navController, nombrePaciente)
+                finalizarMMSE(idPaciente, "MMSE", puntajeTotal, navController, nombrePaciente)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.berenjena_suave)),
@@ -124,7 +124,7 @@ fun PreguntaSwitch(pregunta: String, estado: Boolean, onCheckedChange: (Boolean)
 }
 
 // El idPaciente lo recibiste al navegar a esta pantalla
-fun finalizarExamen(idPaciente: String, tipoExamen: String, puntajeFinal: Int, navController: NavHostController, nombrePaciente: String) {
+fun finalizarMMSE(idPaciente: String, tipoExamen: String, puntajeFinal: Int, navController: NavHostController, nombrePaciente: String) {
     val dbRef = Firebase.database.getReference("Pacientes/$idPaciente/resultados")
 
     val datosExamen = mapOf(
