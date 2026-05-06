@@ -1,27 +1,10 @@
 package mx.edu.itson.aplicacion_estancia
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,19 +13,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import mx.edu.itson.aplicacion_estancia.entidades.Paciente
+import mx.edu.itson.aplicacion_estancia.entidades.PacienteId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaSelectorEvaluacion(navController: NavHostController) {
-    // Listas de opciones
-    val pacientes = listOf("Ramon Flores Vasquez", "Abraham Tovar Guerrero", "Daniel Coronel Miramontes", "Sebas Tortellini Borquez", "Jaime Lerma Cuevas")
+    val database = FirebaseDatabase.getInstance().getReference("Pacientes")
+
+    // Estados para los datos de Firebase
+    val listaPacientesId = remember { mutableStateListOf<PacienteId>() }
+    var isLoading by remember { mutableStateOf(true) }
+
+    // Listas de opciones fijas
     val pruebas = listOf("MMSE (Mini-Mental)", "Escala de Tinetti")
 
     // Estados para los selectores
-    var pacienteSeleccionado by remember { mutableStateOf("") }
+    var pacienteSeleccionado by remember { mutableStateOf<PacienteId?>(null) }
     var pruebaSeleccionada by remember { mutableStateOf("") }
     var expandidoPacientes by remember { mutableStateOf(false) }
     var expandidoPruebas by remember { mutableStateOf(false) }
+
+    // Cargar pacientes desde Firebase en tiempo real
+    LaunchedEffect(Unit) {
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaPacientesId.clear()
+                for (child in snapshot.children) {
+                    val id = child.key ?: ""
+                    val paciente = child.getValue(Paciente::class.java)
+                    paciente?.let {
+                        val nombreCompleto = "${it.nombre} ${it.apellidoPaterno} ${it.apellidoMaterno}"
+                        listaPacientesId.add(PacienteId(id, nombreCompleto))
+                    }
+                }
+                isLoading = false
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                isLoading = false
+            }
+        })
+    }
 
     Column (
         modifier = Modifier
@@ -68,33 +84,46 @@ fun PantallaSelectorEvaluacion(navController: NavHostController) {
 
         // 1. Selector de Paciente
         Text("Paciente:", modifier = Modifier.fillMaxWidth(), fontWeight = FontWeight.Medium)
+        
         ExposedDropdownMenuBox (
             expanded = expandidoPacientes,
-            onExpandedChange = { expandidoPacientes = !expandidoPacientes },
+            onExpandedChange = { if (!isLoading) expandidoPacientes = !expandidoPacientes },
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
         ) {
             OutlinedTextField(
-                value = pacienteSeleccionado,
+                value = if (isLoading) "Cargando..." else (pacienteSeleccionado?.nombre ?: ""),
                 onValueChange = {},
                 readOnly = true,
                 placeholder = { Text("Elegir paciente...") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandidoPacientes) },
-                colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
+                trailingIcon = { 
+                    if (isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    } else {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandidoPacientes)
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, 
+                    unfocusedContainerColor = Color.White
+                ),
                 modifier = Modifier.menuAnchor().fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
-            ExposedDropdownMenu (
-                expanded = expandidoPacientes,
-                onDismissRequest = { expandidoPacientes = false }
-            ) {
-                pacientes.forEach { nombre ->
-                    DropdownMenuItem(
-                        text = { Text(nombre) },
-                        onClick = {
-                            pacienteSeleccionado = nombre
-                            expandidoPacientes = false
-                        }
-                    )
+            
+            if (!isLoading && listaPacientesId.isNotEmpty()) {
+                ExposedDropdownMenu (
+                    expanded = expandidoPacientes,
+                    onDismissRequest = { expandidoPacientes = false }
+                ) {
+                    listaPacientesId.forEach { p ->
+                        DropdownMenuItem(
+                            text = { Text(p.nombre) },
+                            onClick = {
+                                pacienteSeleccionado = p
+                                expandidoPacientes = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -114,7 +143,10 @@ fun PantallaSelectorEvaluacion(navController: NavHostController) {
                 readOnly = true,
                 placeholder = { Text("Elegir prueba...") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandidoPruebas) },
-                colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, 
+                    unfocusedContainerColor = Color.White
+                ),
                 modifier = Modifier.menuAnchor().fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
@@ -139,16 +171,16 @@ fun PantallaSelectorEvaluacion(navController: NavHostController) {
         // Botón para iniciar
         Button (
             onClick = {
-                if (pacienteSeleccionado.isNotEmpty() && pruebaSeleccionada.isNotEmpty()) {
-                    // Aquí navegaremos al formulario real
+                val p = pacienteSeleccionado
+                if (p != null && pruebaSeleccionada.isNotEmpty()) {
                     val ruta = if (pruebaSeleccionada.contains("MMSE")) "formularioMMSE" else "formularioTinetti"
-                    navController.navigate("$ruta/$pacienteSeleccionado")
+                    navController.navigate("$ruta/${p.id}/${p.nombre}")
                 }
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.amatista_suave)),
             shape = RoundedCornerShape(12.dp),
-            enabled = pacienteSeleccionado.isNotEmpty() && pruebaSeleccionada.isNotEmpty()
+            enabled = pacienteSeleccionado != null && pruebaSeleccionada.isNotEmpty()
         ) {
             Text("Comenzar Evaluación", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }

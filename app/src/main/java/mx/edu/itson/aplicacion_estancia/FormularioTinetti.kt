@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
-fun PantallaFormularioTinetti(nombrePaciente: String, navController: NavHostController) {
+fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navController: NavHostController) {
     // Estados para los puntajes de cada observación
     var p1 by remember { mutableIntStateOf(0) } // Equilibrio sentado
     var p2 by remember { mutableIntStateOf(0) } // Levantarse

@@ -50,19 +50,27 @@ fun AppNavigation() {
         }
 
         composable(
-            route = "formularioMMSE/{pacienteNombre}",
-            arguments = listOf(navArgument("pacienteNombre") { type = NavType.StringType })
+            route = "formularioMMSE/{idPaciente}/{pacienteNombre}",
+            arguments = listOf(
+                navArgument("idPaciente") {type = NavType.StringType},
+                navArgument("pacienteNombre") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
+            val idPaciente = backStackEntry.arguments?.getString("idPaciente") ?: ""
             val nombre = backStackEntry.arguments?.getString("pacienteNombre") ?: "Paciente"
-            PantallaFormularioMMSE(nombre, navController)
+            PantallaFormularioMMSE(idPaciente,nombre, navController)
         }
 
         composable(
-            route = "formularioTinetti/{pacienteNombre}",
-            arguments = listOf(navArgument("pacienteNombre") { type = NavType.StringType })
+            route = "formularioTinetti/{idPaciente}/{pacienteNombre}",
+            arguments = listOf(
+                navArgument("idPaciente") {type = NavType.StringType},
+                navArgument("pacienteNombre") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
+            val idPaciente = backStackEntry.arguments?.getString("idPaciente") ?: ""
             val nombre = backStackEntry.arguments?.getString("pacienteNombre") ?: "Paciente"
-            PantallaFormularioTinetti(nombre, navController)
+            PantallaFormularioTinetti(idPaciente,nombre, navController)
         }
 
         composable(

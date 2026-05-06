@@ -16,9 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
 @Composable
-fun PantallaFormularioMMSE(nombrePaciente: String, navController: NavHostController) {
+fun PantallaFormularioMMSE(idPaciente: String, nombrePaciente: String, navController: NavHostController) {
 
     var r1 by remember { mutableStateOf(false) } // Año
     var r2 by remember { mutableStateOf(false) } // Estación
@@ -85,7 +87,7 @@ fun PantallaFormularioMMSE(nombrePaciente: String, navController: NavHostControl
 
         Button(
             onClick = {
-                navController.navigate("pantallaResumen/$nombrePaciente/MMSE/$puntajeTotal")
+                finalizarExamen(idPaciente, "MMSE", puntajeTotal, navController, nombrePaciente)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.berenjena_suave)),
@@ -119,4 +121,20 @@ fun PreguntaSwitch(pregunta: String, estado: Boolean, onCheckedChange: (Boolean)
             )
         }
     }
+}
+
+// El idPaciente lo recibiste al navegar a esta pantalla
+fun finalizarExamen(idPaciente: String, tipoExamen: String, puntajeFinal: Int, navController: NavHostController, nombrePaciente: String) {
+    val dbRef = Firebase.database.getReference("Pacientes/$idPaciente/resultados")
+
+    val datosExamen = mapOf(
+        "tipo" to tipoExamen,
+        "puntaje" to puntajeFinal,
+        "fecha" to System.currentTimeMillis()
+    )
+
+    dbRef.push().setValue(datosExamen)
+        .addOnSuccessListener {
+            navController.navigate("pantallaResumen/$nombrePaciente/MMSE/$puntajeFinal")
+        }
 }
