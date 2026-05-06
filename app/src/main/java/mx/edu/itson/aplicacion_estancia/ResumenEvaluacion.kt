@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 @Composable
 fun PantallaResumenEvaluacion(
     navController: NavHostController,
+    idPaciente: String,
     nombrePaciente: String,
     tipoPrueba: String, // "MMSE" o "Tinetti"
     puntajeObtenido: Int
@@ -43,14 +44,15 @@ fun PantallaResumenEvaluacion(
     // Lógica de interpretación basada en manuales clínicos
     val (diagnostico, colorAlerta) = when (tipoPrueba) {
         "MMSE" -> when {
-            puntajeObtenido >= 24 -> "Sin Deterioro Cognitivo" to colorResource(R.color.verde_fuerte)
-            puntajeObtenido in 19..23 -> "Deterioro Cognitivo Leve" to colorResource(R.color.amarillo)
-            puntajeObtenido in 14..18 -> "Deterioro Moderado" to colorResource(R.color.naranja)
+            puntajeObtenido == 5 -> "Sin Deterioro Cognitivo" to colorResource(R.color.verde_fuerte)
+            puntajeObtenido in 3..4 -> "Deterioro Cognitivo Leve" to colorResource(R.color.amarillo)
+            puntajeObtenido in 1..2 -> "Deterioro Moderado" to colorResource(R.color.naranja)
             else -> "Deterioro Severo" to colorResource(R.color.rojo)
         }
         "Tinetti" -> when {
-            puntajeObtenido >= 24 -> "Riesgo Mínimo de Caída" to colorResource(R.color.verde_fuerte)
-            puntajeObtenido in 19..23 -> "Riesgo Moderado de Caída" to colorResource(R.color.amarillo)
+            puntajeObtenido == 5 -> "Riesgo Mínimo de Caída" to colorResource(R.color.verde_fuerte)
+            puntajeObtenido in 3..4 -> "Riesgo Leve de Caída" to colorResource(R.color.amarillo)
+            puntajeObtenido in 1..2 -> "Riesgo Moderado de Caída" to colorResource(R.color.naranja)
             else -> "Riesgo Alto de Caída" to colorResource(R.color.rojo)
         }
         else -> "Resultado No Clasificado" to Color.Gray
@@ -141,7 +143,7 @@ fun PantallaResumenEvaluacion(
         }
 
         TextButton (
-            onClick = { navController.navigate("seguimiento/$nombrePaciente")},
+            onClick = { navController.navigate("seguimiento/$idPaciente/$nombrePaciente")},
             modifier = Modifier.padding(top = 8.dp)
         ) {
             Text("Ver historial de $nombrePaciente", color = colorResource(id = R.color.lavanda_profundo))

@@ -81,18 +81,20 @@ fun AppNavigation() {
         }
 
         composable(
-            route = "pantallaResumen/{nombre}/{prueba}/{puntos}",
+            route = "pantallaResumen/{idPaciente}/{nombre}/{prueba}/{puntos}",
             arguments = listOf(
+                navArgument("idPaciente") { type = NavType.StringType },
                 navArgument("nombre") { type = NavType.StringType },
                 navArgument("prueba") { type = NavType.StringType },
                 navArgument("puntos") { type = NavType.IntType }
             )
         ) { backStackEntry ->
+            val idPaciente = backStackEntry.arguments?.getString("idPaciente") ?: ""
             val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
             val prueba = backStackEntry.arguments?.getString("prueba") ?: ""
             val puntos = backStackEntry.arguments?.getInt("puntos") ?: 0
 
-            PantallaResumenEvaluacion(navController, nombre, prueba, puntos)
+            PantallaResumenEvaluacion(navController,idPaciente, nombre, prueba, puntos)
         }
 
         composable("listaEdicionPacientes") {

@@ -93,7 +93,7 @@ fun PantallaFormularioMMSE(idPaciente: String, nombrePaciente: String, navContro
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.berenjena_suave)),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Siguiente Sección (Espacial)", fontWeight = FontWeight.Bold)
+            Text("Finalizar Evaluación", fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -135,6 +135,6 @@ fun finalizarMMSE(idPaciente: String, tipoExamen: String, puntajeFinal: Int, nav
 
     dbRef.push().setValue(datosExamen)
         .addOnSuccessListener {
-            navController.navigate("pantallaResumen/$nombrePaciente/MMSE/$puntajeFinal")
+            navController.navigate("pantallaResumen/$idPaciente/$nombrePaciente/MMSE/$puntajeFinal")
         }
 }

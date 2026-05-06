@@ -97,7 +97,7 @@ fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navCon
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.berenjena_suave)),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Siguiente: Evaluación de Marcha", fontWeight = FontWeight.Bold)
+            Text("Finalizar Evaluación", fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -148,6 +148,6 @@ fun finalizarTinetti(idPaciente: String, tipoExamen: String, puntajeFinal: Int, 
 
     dbRef.push().setValue(datosExamen)
         .addOnSuccessListener {
-            navController.navigate("pantallaResumen/$nombrePaciente/Tinetti/$puntajeFinal")
+            navController.navigate("pantallaResumen/$idPaciente/$nombrePaciente/Tinetti/$puntajeFinal")
         }
 }

@@ -45,8 +45,6 @@ fun PantallaMenuPrincipal(navController: NavHostController) {
             colorResource(R.color.lavanda_brillante)),
         OpcionMenu(stringResource(R.string.btnEvaluaciones), Icons.Default.Star,
             colorResource(R.color.lavanda_brillante)),
-        OpcionMenu(stringResource(R.string.btnHistorial), Icons.Default.DateRange,
-            colorResource(R.color.lavanda_brillante)),
         OpcionMenu(stringResource(R.string.btnEditarPacientes), Icons.Default.Edit,
             colorResource(R.color.lavanda_brillante)),
         OpcionMenu(stringResource(R.string.btnAdministrarUsuarios), Icons.Default.Person,
@@ -92,7 +90,6 @@ fun PantallaMenuPrincipal(navController: NavHostController) {
 fun TarjetaMenu(navController:NavHostController, opcion: OpcionMenu) {
     val textoPacientes = stringResource(R.string.btnPacientes)
     val textoEvaluaciones = stringResource(R.string.btnEvaluaciones)
-    val textoHistorial = stringResource(R.string.btnHistorial)
     val textoEditarPacientes = stringResource(R.string.btnEditarPacientes)
     val textoAdministrarUsuarios = stringResource(R.string.btnAdministrarUsuarios)
 
