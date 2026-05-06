@@ -24,6 +24,7 @@
     <string name="btnEvaluaciones">Evaluaciones</string>
     <string name="btnHistorial">Historial</string>
     <string name="btnEditarPacientes">Editar Pacientes</string>
+    <string name="btnAdministrarUsuarios">Administrar Usuarios</string>
     <string name="tituloMenu">Bienvenido,</string>
     <string name="nombreEstancia">Estancia Alzheimer</string>
     <!-- String de navegacion-->

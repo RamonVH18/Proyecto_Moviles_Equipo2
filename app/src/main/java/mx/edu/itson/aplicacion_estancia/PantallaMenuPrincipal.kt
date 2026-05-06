@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,6 +48,8 @@ fun PantallaMenuPrincipal(navController: NavHostController) {
         OpcionMenu(stringResource(R.string.btnHistorial), Icons.Default.DateRange,
             colorResource(R.color.lavanda_brillante)),
         OpcionMenu(stringResource(R.string.btnEditarPacientes), Icons.Default.Edit,
+            colorResource(R.color.lavanda_brillante)),
+        OpcionMenu(stringResource(R.string.btnAdministrarUsuarios), Icons.Default.Person,
             colorResource(R.color.lavanda_brillante))
     )
 
@@ -91,6 +94,7 @@ fun TarjetaMenu(navController:NavHostController, opcion: OpcionMenu) {
     val textoEvaluaciones = stringResource(R.string.btnEvaluaciones)
     val textoHistorial = stringResource(R.string.btnHistorial)
     val textoEditarPacientes = stringResource(R.string.btnEditarPacientes)
+    val textoAdministrarUsuarios = stringResource(R.string.btnAdministrarUsuarios)
 
     Card(
         modifier = Modifier
@@ -104,6 +108,7 @@ fun TarjetaMenu(navController:NavHostController, opcion: OpcionMenu) {
                 textoPacientes -> navController.navigate("listaPacientes")
                 textoEvaluaciones -> navController.navigate("selectorEvaluacion")
                 textoEditarPacientes -> navController.navigate("listaEdicionPacientes")
+                textoAdministrarUsuarios -> navController.navigate("administrarUsuarios")
                 else -> println("Opción no implementada")
             }
         }

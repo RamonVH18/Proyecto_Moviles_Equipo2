@@ -106,5 +106,17 @@ fun AppNavigation() {
             val idPaciente = backStackEntry.arguments?.getString("idPaciente") ?: ""
             PantallaEditarPaciente(navController, idPaciente)
         }
+
+        composable("administrarUsuarios") {
+            PantallaAdministrarUsuarios(navController = navController)
+        }
+
+        composable(
+            route = "editarUsuario/{idUsuario}",
+            arguments = listOf(navArgument("idUsuario") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idUsuario = backStackEntry.arguments?.getString("idUsuario") ?: ""
+            PantallaEditarUsuario(navController, idUsuario)
+        }
     }
 }
