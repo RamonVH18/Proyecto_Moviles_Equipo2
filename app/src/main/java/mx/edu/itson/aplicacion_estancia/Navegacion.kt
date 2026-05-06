@@ -40,9 +40,16 @@ fun AppNavigation() {
             PantallaFormularioPaciente(navController = navController)
         }
 
-        composable("seguimiento/{nombre}") { backStackEntry ->
+        composable(
+            route = "seguimiento/{idPaciente}/{nombre}",
+            arguments = listOf(
+                navArgument("idPaciente") { type = NavType.StringType },
+                navArgument("nombre") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val idPaciente = backStackEntry.arguments?.getString("idPaciente") ?: ""
             val nombreSeleccionado = backStackEntry.arguments?.getString("nombre") ?: "Paciente"
-            PantallaSeguimientoResultados(nombreSeleccionado)
+            PantallaSeguimientoResultados(idPaciente, nombreSeleccionado, navController)
         }
 
         composable ("selectorEvaluacion"){
@@ -86,6 +93,18 @@ fun AppNavigation() {
             val puntos = backStackEntry.arguments?.getInt("puntos") ?: 0
 
             PantallaResumenEvaluacion(navController, nombre, prueba, puntos)
+        }
+
+        composable("listaEdicionPacientes") {
+            PantallaListaEdicionPacientes(navController = navController)
+        }
+
+        composable(
+            route = "editarPaciente/{idPaciente}",
+            arguments = listOf(navArgument("idPaciente") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idPaciente = backStackEntry.arguments?.getString("idPaciente") ?: ""
+            PantallaEditarPaciente(navController, idPaciente)
         }
     }
 }

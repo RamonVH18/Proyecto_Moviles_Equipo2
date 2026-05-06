@@ -1,24 +1,14 @@
 package mx.edu.itson.aplicacion_estancia
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,67 +16,100 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import mx.edu.itson.aplicacion_estancia.entidades.RegistroEvaluacion
+import androidx.navigation.NavHostController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaSeguimientoResultados(nombrePaciente: String) {
-    // Simulamos que obtenemos los datos específicos de este paciente
-    val historialPaciente = when (nombrePaciente) {
-        "Ramon Flores Vasquez" -> listOf(
-            RegistroEvaluacion("20/03/2026", "MMSE", 22, 30, "Estable"),
-            RegistroEvaluacion("10/11/2025", "MMSE", 24, 30, "Mejora")
-        )
-        "Sebas Tortellini Borquez" -> listOf(
-            RegistroEvaluacion("15/02/2026", "Tinetti", 12, 28, "Declive"),
-            RegistroEvaluacion("01/10/2025", "Tinetti", 18, 28, "Estable")
-        )
-        else -> emptyList() // Datos por defecto para los demás
-    }
+fun PantallaSeguimientoResultados(idPaciente: String, nombrePaciente: String, navController: NavHostController) {
+    val database = FirebaseDatabase.getInstance().getReference("Pacientes").child(idPaciente).child("resultados")
+    var historial by remember { mutableStateOf<List<Map<String, Any>>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    val estadoClinico = when (nombrePaciente) {
-        "Ramon Flores Vasquez" -> "Deterioro Cognitivo Leve - Riesgo Moderado"
-        "Sebas Tortellini Borquez" -> "Riesgo de Caída Alto - Requiere Asistencia"
-        else -> "Sin evaluación reciente"
-    }
-
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.lavanda_nieve))
-            .padding(16.dp)
-    ) {
-        Text(text = "Seguimiento Individual", fontSize = 14.sp, color = Color.Gray)
-        Text(
-            text = nombrePaciente,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.berenjena_suave)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Tarjeta de Estado Clínico (Consulta Rápida)
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.amatista_suave))
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("Resumen Clínico", color = Color.White, fontWeight = FontWeight.Bold)
-                Text(estadoClinico, color = Color.White.copy(alpha = 0.8f))
+    LaunchedEffect(idPaciente) {
+        val query = database.orderByChild("fecha")
+        query.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val lista = mutableListOf<Map<String, Any>>()
+                for (resSnapshot in snapshot.children) {
+                    val map = resSnapshot.value as? Map<String, Any>
+                    if (map != null) {
+                        lista.add(map)
+                    }
+                }
+                // Ordenar por fecha descendente (más reciente primero)
+                historial = lista.sortedByDescending { it["fecha"] as? Long ?: 0L }
+                isLoading = false
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                isLoading = false
+            }
+        })
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Seguimiento de Paciente", color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar", tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colorResource(id = R.color.berenjena_suave)
+                )
+            )
         }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(colorResource(id = R.color.lavanda_nieve))
+                .padding(16.dp)
+        ) {
+            Text(text = "Paciente:", fontSize = 14.sp, color = Color.Gray)
+            Text(
+                text = nombrePaciente,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.berenjena_suave)
+            )
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // Comparación de Evaluaciones
-        Text("Historial de Pruebas", fontWeight = FontWeight.Bold, color = colorResource(R.color.lavanda_profundo))
+            Text(
+                text = "Historial de Pruebas",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = colorResource(R.color.lavanda_profundo)
+            )
 
-        if (historialPaciente.isEmpty()) {
-            Text("No hay registros para este paciente.", modifier = Modifier.padding(top = 20.dp))
-        } else {
-            LazyColumn (verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(historialPaciente) { registro ->
-                    ItemComparacion(registro)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = colorResource(id = R.color.berenjena_suave))
+                }
+            } else if (historial.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No hay evaluaciones registradas para este paciente.", color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(historial) { registro ->
+                        CardResultado(registro)
+                    }
                 }
             }
         }
@@ -94,22 +117,24 @@ fun PantallaSeguimientoResultados(nombrePaciente: String) {
 }
 
 @Composable
-fun ItemComparacion(registro: RegistroEvaluacion) {
-    // Definimos los colores según la tendencia (Mejora, Estable, Declive)
-    val colorTendencia = when (registro.tendencia) {
-        "Mejora" -> colorResource(R.color.verde_fuerte) // Verde
-        "Declive" -> colorResource(R.color.rojo) // Rojo
-        else -> Color.Gray
-    }
+fun CardResultado(registro: Map<String, Any>) {
+    val tipo = registro["tipo"] as? String ?: "Prueba"
+    val puntaje = (registro["puntaje"] as? Long)?.toInt() ?: 0
+    val fechaTimestamp = registro["fecha"] as? Long ?: 0L
+    
+    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    val fechaFormateada = if (fechaTimestamp != 0L) sdf.format(Date(fechaTimestamp)) else "Fecha desconocida"
+
+    // Definir el total según el tipo de prueba
+    val total = if (tipo == "MMSE") 30 else if (tipo == "Tinetti") 28 else 0
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
@@ -117,29 +142,23 @@ fun ItemComparacion(registro: RegistroEvaluacion) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Text(text = registro.fecha, fontSize = 12.sp, color = Color.Gray)
+                Text(text = fechaFormateada, fontSize = 12.sp, color = Color.Gray)
                 Text(
-                    text = registro.tipo,
+                    text = tipo,
                     fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
                     color = colorResource(id = R.color.berenjena_suave)
                 )
             }
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "${registro.puntaje} / ${registro.total}",
+                    text = if (total > 0) "$puntaje / $total" else "$puntaje pts",
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     color = colorResource(id = R.color.lavanda_profundo)
-                )
-                Text(
-                    text = registro.tendencia,
-                    fontSize = 12.sp,
-                    color = colorTendencia,
-                    fontWeight = FontWeight.Bold
                 )
             }
         }
     }
 }
-

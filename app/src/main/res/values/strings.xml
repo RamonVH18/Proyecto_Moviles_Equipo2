@@ -23,7 +23,7 @@
     <string name="btnPacientes">Pacientes</string>
     <string name="btnEvaluaciones">Evaluaciones</string>
     <string name="btnHistorial">Historial</string>
-    <string name="btnPendientes">Pendientes</string>
+    <string name="btnEditarPacientes">Editar Pacientes</string>
     <string name="tituloMenu">Bienvenido,</string>
     <string name="nombreEstancia">Estancia Alzheimer</string>
     <!-- String de navegacion-->
@@ -37,4 +37,8 @@
     <string name="preguntaMMSE3">¿Qué día del mes es hoy?</string>
     <string name="preguntaMMSE4">¿En qué mes estamos?</string>
     <string name="preguntaMMSE5">¿Qué día de la semana es hoy?</string>
+    <string name="form_label_apellido_paterno">Apellido Paterno</string>
+    <string name="form_label_apellido_materno">Apellido Materno</string>
+    <string name="btnGuardar">Guardar</string>
+    <string name="btnCancelar">Cancelar</string>
 </resources>

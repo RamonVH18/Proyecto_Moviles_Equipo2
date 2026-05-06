@@ -7,8 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,12 +24,11 @@ import com.google.firebase.database.ValueEventListener
 import mx.edu.itson.aplicacion_estancia.entidades.Paciente
 
 @Composable
-fun PantallaListaPacientes(navController: NavHostController) {
+fun PantallaListaEdicionPacientes(navController: NavHostController) {
     val database = FirebaseDatabase.getInstance().getReference("Pacientes")
     var pacientes by remember { mutableStateOf<List<Paciente>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // Escuchar cambios en tiempo real desde Firebase
     LaunchedEffect(Unit) {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -54,18 +51,7 @@ fun PantallaListaPacientes(navController: NavHostController) {
         database.addValueEventListener(listener)
     }
 
-    Scaffold(
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { navController.navigate("registroPaciente") },
-                containerColor = colorResource(id = R.color.berenjena_suave),
-                contentColor = Color.White,
-                shape = RoundedCornerShape(16.dp),
-                icon = { Icon(Icons.Default.Add, contentDescription = "Agregar") },
-                text = { Text("Nuevo Paciente") }
-            )
-        }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -74,7 +60,7 @@ fun PantallaListaPacientes(navController: NavHostController) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "Directorio de Pacientes",
+                text = "Seleccione Paciente para Editar",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(id = R.color.berenjena_suave),
@@ -95,7 +81,7 @@ fun PantallaListaPacientes(navController: NavHostController) {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(pacientes) { paciente ->
-                        CardPaciente(paciente, navController)
+                        CardPacienteEdicion(paciente, navController)
                     }
                 }
             }
@@ -104,13 +90,12 @@ fun PantallaListaPacientes(navController: NavHostController) {
 }
 
 @Composable
-fun CardPaciente(paciente: Paciente, navController: NavHostController) {
+fun CardPacienteEdicion(paciente: Paciente, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val nombreCompleto = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}"
-                navController.navigate("seguimiento/${paciente.id}/$nombreCompleto")
+                navController.navigate("editarPaciente/${paciente.id}")
             },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -144,19 +129,6 @@ fun CardPaciente(paciente: Paciente, navController: NavHostController) {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = colorResource(id = R.color.berenjena_suave)
-                )
-
-                Text(
-                    text = "Nació: ${paciente.fechaNacimiento}",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-
-                Text(
-                    text = "Tel: ${paciente.contacto}",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = colorResource(id = R.color.lavanda_profundo)
                 )
             }
         }
