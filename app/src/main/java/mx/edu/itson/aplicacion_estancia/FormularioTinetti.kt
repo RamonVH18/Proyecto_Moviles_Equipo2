@@ -21,12 +21,27 @@ import com.google.firebase.database.database
 
 @Composable
 fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navController: NavHostController) {
-    // Estados para los puntajes de cada observación
-    var p1 by remember { mutableIntStateOf(0) } // Equilibrio sentado
-    var p2 by remember { mutableIntStateOf(0) } // Levantarse
-    var p3 by remember { mutableIntStateOf(0) } // Intentos para levantarse
+    // Estados para los puntajes de cada observación (Total 18 secciones detectadas)
+    var p1 by remember { mutableIntStateOf(0) } // 1. Equilibrio sentado
+    var p2 by remember { mutableIntStateOf(0) } // 2. Levantarse
+    var p3 by remember { mutableIntStateOf(0) } // 3. Intentos para levantarse
+    var p4 by remember { mutableIntStateOf(0) } // 4. Equilibrio inmediato
+    var p5 by remember { mutableIntStateOf(0) } // 5. Equilibrio en bipedestación
+    var p6 by remember { mutableIntStateOf(0) } // 6. Empujón
+    var p7 by remember { mutableIntStateOf(0) } // 7. Ojos cerrados
+    var p8 by remember { mutableIntStateOf(0) } // 8. Giro 360 (Pasos)
+    var p9 by remember { mutableIntStateOf(0) } // 8. Giro 360 (Estabilidad)
+    var p10 by remember { mutableIntStateOf(0) } // 9. Sentarse
+    var p11 by remember { mutableIntStateOf(0) } // 10. Iniciación de la marcha
+    var p12 by remember { mutableIntStateOf(0) } // 11. Paso derecho
+    var p13 by remember { mutableIntStateOf(0) } // 11. Paso izquierdo
+    var p14 by remember { mutableIntStateOf(0) } // 12. Simetría
+    var p15 by remember { mutableIntStateOf(0) } // 13. Continuidad
+    var p16 by remember { mutableIntStateOf(0) } // 14. Trayectoria
+    var p17 by remember { mutableIntStateOf(0) } // 15. Estabilidad tronco
+    var p18 by remember { mutableIntStateOf(0) } // 16. Postura
 
-    val puntajeTotal = p1 + p2 + p3
+    val puntajeTotal = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + p10 + p11 + p12 + p13 + p14 + p15 + p16 + p17 + p18
 
     Column(
         modifier = Modifier
@@ -35,7 +50,7 @@ fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navCon
             .verticalScroll(rememberScrollState())
             .padding(24.dp)
     ) {
-        Text(text = "Escala de Tinetti (Equilibrio)", fontSize = 14.sp, color = Color.Gray)
+        Text(text = "Escala de Tinetti (Equilibrio y Marcha)", fontSize = 14.sp, color = Color.Gray)
         Text(
             text = nombrePaciente,
             fontSize = 24.sp,
@@ -51,12 +66,13 @@ fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navCon
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.amatista_suave))
         ) {
             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Riesgo de Caída", color = Color.White, fontSize = 14.sp)
+                Text("Puntaje Total", color = Color.White, fontSize = 14.sp)
                 Text("$puntajeTotal Puntos", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Black)
                 Text(
                     text = when {
-                        puntajeTotal < 2 -> "Riesgo Alto"
-                        else -> "Riesgo Bajo (En esta sección)"
+                        puntajeTotal < 19 -> "Riesgo Alto de Caída"
+                        puntajeTotal < 24 -> "Riesgo Moderado"
+                        else -> "Riesgo Bajo"
                     },
                     color = Color.White.copy(alpha = 0.8f)
                 )
@@ -65,26 +81,138 @@ fun PantallaFormularioTinetti(idPaciente: String, nombrePaciente: String, navCon
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Preguntas tipo Observación
+        // SECCIÓN: EQUILIBRIO
+        Text(text = "I. EVALUACIÓN DEL EQUILIBRIO", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = colorResource(id = R.color.lavanda_profundo))
+
         SeccionTinetti(
             titulo = "1. Equilibrio sentado",
-            opciones = listOf("Se inclina o desliza en la silla (0)", "Seguro y firme (1)"),
+            opciones = listOf("Se inclina o desliza en la silla", "Seguro y firme"),
             seleccionado = p1,
             onOptionSelected = { p1 = it }
         )
 
         SeccionTinetti(
             titulo = "2. Levantarse",
-            opciones = listOf("Incapaz sin ayuda (0)", "Capaz con ayuda de brazos (1)", "Capaz sin usar brazos (2)"),
+            opciones = listOf("Incapaz sin ayuda", "Capaz con ayuda de brazos", "Capaz sin usar brazos"),
             seleccionado = p2,
             onOptionSelected = { p2 = it }
         )
 
         SeccionTinetti(
             titulo = "3. Intentos para levantarse",
-            opciones = listOf("Incapaz sin ayuda (0)", "Capaz pero necesita más de un intento (1)", "Capaz de levantarse con un solo intento (2)"),
+            opciones = listOf("Incapaz sin ayuda", "Capaz pero necesita más de un intento", "Capaz de levantarse con un solo intento"),
             seleccionado = p3,
             onOptionSelected = { p3 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "4. Equilibrio inmediato al levantarse",
+            opciones = listOf("Inestable / se tambalea", "Estable pero usa bastón/andador", "Completamente estable sin apoyos"),
+            seleccionado = p4,
+            onOptionSelected = { p4 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "5. Equilibrio en bipedestación",
+            opciones = listOf("Inestable", "Apoyo amplio o usa ayuda", "Apoyo estrecho sin soporte"),
+            seleccionado = p5,
+            onOptionSelected = { p5 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "6. Empujón",
+            opciones = listOf("Empieza a caerse", "Se tambalea / se agarra", "Se mantiene estable"),
+            seleccionado = p6,
+            onOptionSelected = { p6 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "7. Ojos cerrados",
+            opciones = listOf("Inestable", "Estable"),
+            seleccionado = p7,
+            onOptionSelected = { p7 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "8a. Giro de 360 grados (Pasos)",
+            opciones = listOf("Pasos discontinuos", "Pasos seguidos"),
+            seleccionado = p8,
+            onOptionSelected = { p8 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "8b. Giro de 360 grados (Estabilidad)",
+            opciones = listOf("Inestable", "Estable"),
+            seleccionado = p9,
+            onOptionSelected = { p9 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "9. Sentarse",
+            opciones = listOf("Inseguro / calcula mal la distancia", "Usa los brazos de forma brusca", "Se sienta con un movimiento suave y seguro"),
+            seleccionado = p10,
+            onOptionSelected = { p10 = it }
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // SECCIÓN: MARCHA
+        Text(text = "II. EVALUACIÓN DE LA MARCHA", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = colorResource(id = R.color.lavanda_profundo))
+
+        SeccionTinetti(
+            titulo = "10. Iniciación de la marcha",
+            opciones = listOf("Vacila o tiene múltiples intentos", "Empieza a caminar inmediatamente sin dudar"),
+            seleccionado = p11,
+            onOptionSelected = { p11 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "11a. Longitud y altura del paso (pie derecho)",
+            opciones = listOf("No sobrepasa al izquierdo / no se separa del suelo", "Sobrepasa al izquierdo y se eleva completamente"),
+            seleccionado = p12,
+            onOptionSelected = { p12 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "11b. Longitud y altura del paso (pie izquierdo)",
+            opciones = listOf("No sobrepasa al derecho / no se separa del suelo", "Sobrepasa al derecho y se eleva completamente"),
+            seleccionado = p13,
+            onOptionSelected = { p13 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "12. Simetría del paso",
+            opciones = listOf("La longitud es diferente", "Ambos pasos miden lo mismo"),
+            seleccionado = p14,
+            onOptionSelected = { p14 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "13. Continuidad de los pasos",
+            opciones = listOf("Detiene o interrumpe la marcha entre pasos", "Los pasos son continuos"),
+            seleccionado = p15,
+            onOptionSelected = { p15 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "14. Desviación de la trayectoria",
+            opciones = listOf("Desviación severa / se va de lado", "Desviación moderada o usa ayuda", "Camina recto sin apoyo"),
+            seleccionado = p16,
+            onOptionSelected = { p16 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "15. Estabilidad del tronco",
+            opciones = listOf("Balanceo marcado o usa ayuda", "Flexiona las rodillas/espalda o abre los brazos", "Tronco firme sin balanceo"),
+            seleccionado = p17,
+            onOptionSelected = { p17 = it }
+        )
+
+        SeccionTinetti(
+            titulo = "16. Postura al caminar",
+            opciones = listOf("Los talones se separan mucho al caminar", "Los talones casi se tocan al avanzar"),
+            seleccionado = p18,
+            onOptionSelected = { p18 = it }
         )
 
         Spacer(modifier = Modifier.height(32.dp))

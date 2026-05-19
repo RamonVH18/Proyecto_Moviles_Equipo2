@@ -38,6 +38,17 @@
     <string name="preguntaMMSE3">¿Qué día del mes es hoy?</string>
     <string name="preguntaMMSE4">¿En qué mes estamos?</string>
     <string name="preguntaMMSE5">¿Qué día de la semana es hoy?</string>
+    <string name="preguntaMMSE6">¿En qué lugar estamos?</string>
+    <string name="preguntaMMSE7">¿En qué piso o planta estamos?</string>
+    <string name="preguntaMMSE8">¿En qué ciudad o pueblo?</string>
+    <string name="preguntaMMSE9">¿En qué provincia o estado?</string>
+    <string name="preguntaMMSE10">¿En qué país?</string>
+    <string name="preguntaMMSE11">Pelota</string>
+    <string name="preguntaMMSE12">Caballo</string>
+    <string name="preguntaMMSE13">Manzana</string>
+
+
+
     <string name="form_label_apellido_paterno">Apellido Paterno</string>
     <string name="form_label_apellido_materno">Apellido Materno</string>
     <string name="btnGuardar">Guardar</string>
