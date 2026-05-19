@@ -116,7 +116,15 @@ fun PantallaFormularioPaciente(navController: NavHostController) {
                     if (nombre.isNotEmpty() && apellidoPaterno.isNotEmpty() && apellidoMaterno.isNotEmpty() && fechaNacimiento.isNotEmpty() && telefono.isNotEmpty()){
                         val pacienteId = database.push().key!!
 
-                        val paciente = Paciente(nombre,apellidoPaterno,apellidoMaterno,fechaNacimiento,telefono)
+                        // Usamos argumentos nombrados para evitar errores si el orden de los campos cambia
+                        val paciente = Paciente(
+                            id = pacienteId,
+                            nombre = nombre,
+                            apellidoPaterno = apellidoPaterno,
+                            apellidoMaterno = apellidoMaterno,
+                            fechaNacimiento = fechaNacimiento,
+                            contacto = telefono
+                        )
 
                         database.child(pacienteId).setValue(paciente)
                             .addOnSuccessListener {
